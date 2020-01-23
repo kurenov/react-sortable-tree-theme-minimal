@@ -94,9 +94,10 @@ $hover-padding: 3px;
   height: 100%;
   padding: 0 5px 0 30px;
   min-width: 230px;
-  flex: 1 0 auto;
+  // flex: 1 0 auto;
   display: flex;
   align-items: center;
+  width: 100%;
   justify-content: space-between;
   background-color: white;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
@@ -110,7 +111,7 @@ $hover-padding: 3px;
 .rowLabel {
   @extend %rowItem;
   flex: 0 1 auto;
-  padding-right: 20px;
+  padding-right: 30px;
   width: 100%;
 }
 
@@ -213,12 +214,13 @@ $hover-padding: 3px;
 }
 
 .rowSubtitle {
-  font-size: 70%;
-  line-height: 0.7;
-  width: 95%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  // font-size: 100%;
+  // line-height: 1;
+  width: calc(100% - 30px);
+  // overflow: hidden;
+  white-space: normal;
+  word-break: break-word;
+  // text-overflow: ellipsis;
   display: inline-block;
 }
 

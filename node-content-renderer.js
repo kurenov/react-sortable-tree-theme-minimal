@@ -1,6 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
+
 import styles from './node-content-renderer.scss';
+
+const ActionsStyled = styled.div`
+  display: inline-block;
+  right: 8px;
+  top: 8px;
+  position: absolute;
+`;
 
 function isDescendant(older, younger) {
   return (
@@ -14,6 +23,35 @@ function isDescendant(older, younger) {
 
 // eslint-disable-next-line react/prefer-stateless-function
 class MinimalThemeNodeContentRenderer extends Component {
+
+  renderEditEditor(){
+    const { editor, node } = this.props;
+    const icon = node.children ? 'FaListAlt' : 'FaTag';
+    if (editor && editor.action === 'edit' && editor.id === node._id){
+      return (
+        <CategoryStyled key={node._id}>
+          <CategoryEditor
+            {...editor}
+            icon={icon}
+            initialValues={{ name: node.name, description: node.description }}
+            form={getEditCategoriesFormKey(node._id)}
+          />
+        </CategoryStyled>
+      );
+    }
+    if (editor && editor.action === 'add' && editor.parentId && editor.parentId === node._id){
+      return (
+        <CategoryEditor
+          {...editor}
+          icon={icon}
+          parentName={node.name}
+          form={EDIT_CATEGORIES_FORM_NAME}
+        />
+      );
+    }
+    return null;
+  }
+
   render() {
     const {
       scaffoldBlockPxWidth,
@@ -33,6 +71,8 @@ class MinimalThemeNodeContentRenderer extends Component {
       isSearchFocus,
       icons,
       buttons,
+      editor,
+      icon,
       className,
       style,
       didDrop,
@@ -58,6 +98,7 @@ class MinimalThemeNodeContentRenderer extends Component {
           (!canDrag ? ` ${styles.rowContentsDragDisabled}` : '')
         }
       >
+        <div>{icon}</div>
         <div className={styles.rowLabel}>
           <span
             className={
@@ -88,15 +129,21 @@ class MinimalThemeNodeContentRenderer extends Component {
         </div>
 
         <div className={styles.rowToolbar}>
-          {buttons.map((btn, index) => (
-            <div
-              key={index} // eslint-disable-line react/no-array-index-key
-              className={styles.toolbarButton}
-            >
-              {btn}
-            </div>
-          ))}
+          <ActionsStyled>
+            {buttons.map((btn, index) => (
+              <div
+                key={index} // eslint-disable-line react/no-array-index-key
+                className={styles.toolbarButton}
+              >
+                {btn}
+              </div>
+            ))}
+          </ActionsStyled>
         </div>
+        {/* Categories editor */}
+        {editor}
+        {/* {this.renderEditEditor()} */}
+        {/* {this.renderButtons()} */}
       </div>
     );
 
@@ -213,7 +260,10 @@ MinimalThemeNodeContentRenderer.propTypes = {
   // Drop target
   canDrop: PropTypes.bool,
   isOver: PropTypes.bool.isRequired,
-  rowDirection: PropTypes.string.isRequired
+  rowDirection: PropTypes.string.isRequired,
+  // Custom
+  buttons: PropTypes.array.isRequired,
+  editor: PropTypes.object
 };
 
 export default MinimalThemeNodeContentRenderer;
